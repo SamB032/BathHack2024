@@ -70,7 +70,6 @@ export default function LinearRegGraph({handleSendData}:LinearRegProps){
         const y = e.clientY - rect.top;
         const boundedX = Math.min(500,(Math.max(x,0)))
         const boundedY = Math.min(500,(Math.max(500-y,0)))
-        const colour="grey"
 console.log(boundedX,boundedY)
         setPoints((prevPoints) => {
           if (prevPoints.length > 0) {
