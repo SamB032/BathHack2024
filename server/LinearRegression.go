@@ -33,8 +33,8 @@ func computeGradient(datapoints [][]float32, parameters []float32, gradientChan 
 }
 
 func LinearRegression(datapoints [][]float32, numberOfDimensions int) []float32 {
-	parameters := make([]float32, numberOfDimensions) // Initialise the parameters with zeros
-
+	var parameters []float32 = []float32{0, 1}
+	
 	// Initialize parameters with 1
 	for i := range parameters {
 		parameters[i] = 1.0
