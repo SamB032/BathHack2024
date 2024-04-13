@@ -7,7 +7,6 @@ import LinearRegGraph from './components/linearRegGraph';
 function App() {
 
   const [activePage, setActivePage] = useState("");
-<<<<<<< HEAD
   const [dataToSend, setPointCoordinates] = useState<enteredData[]>(getRandomData())
   const [parameters, setParameters] = useState<[number,number]>([0,1])
 
@@ -15,8 +14,11 @@ function App() {
   useEffect(()=>{
     fetchParameters()
   },[])
-=======
->>>>>>> 4103e1748c44ee79c0c401a314b93f0175f2cc95
+
+  const fetchParameters = async() => {
+    const parameterData = await sendDataToAPI(dataToSend);
+    setParameters(parameterData);
+  }
 
 
   const handleSetActivePage = (page: string) => {
@@ -42,7 +44,9 @@ function App() {
             {activePage == "Nearest Neighbour"&&<LinearRegGraph handleSendData={sendDataToAPI}/>}
             {activePage} Page content goes here.
             </div>}
-          <div>  </div>
+          <div>  
+
+          </div>
       </div>
     </div>
   );
