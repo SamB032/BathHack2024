@@ -1,4 +1,7 @@
 export interface enteredData{
-    coordinates: [number, number][],
+    boundedX: number,
+    boundedY: number,
+    colour: string,
+    isNew: boolean,
     clusters? : number
 }
