@@ -51,11 +51,8 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
-    
-        // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-        // Draw points
+
         ctx.fillStyle = "blue";
         points.forEach(({ boundedX, boundedY,colour }) => {
             const canvasX = boundedX;
@@ -101,12 +98,22 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
         const boundedX = Math.min(500,(Math.max(x,0)))
         const boundedY = Math.min(500,(Math.max(500-y,0)))
         const colour="grey"
-        setPoints((prevPoints) => [...prevPoints, { boundedX, boundedY,colour,isNew:true,clusters:0 }]);
+console.log(boundedX,boundedY)
+        setPoints((prevPoints) => {
+          if (prevPoints.length > 0) {
+              for (let i = 0; i < prevPoints.length; i++) {
+                  prevPoints[i].isNew = false;
+                  prevPoints[i].colour = "grey";
+                }
+              prevPoints[prevPoints.length - 1].colour = 'grey';
+          }
+          return [...prevPoints, { boundedX, boundedY, colour: 'black', isNew: true, clusters: 0 }];
+        });
+       
 
       };
       useEffect(() => {
         const fetchData = async () => {
-            // Perform the asynchronous operation after points state is updated
             if(points[0]!=undefined){
               const newLineData = await handleSendData({coordinates:points});
               console.log("New Line Data",newLineData)
@@ -122,7 +129,7 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
     
     useEffect(()=>{
       if(randomClicked){
-        setPoints(getRandomData());//generated points
+        setPoints(getRandomData());
       }
     },[randomClicked])
     
@@ -131,7 +138,7 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        setPoints([]);//generated points
+        setPoints([]);
       }
     },[clearedClicked])
     

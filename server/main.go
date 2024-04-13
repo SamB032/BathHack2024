@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
@@ -16,9 +17,25 @@ type APIneighbours struct {
 	Point    []float32 `json:"point"`
 }
 
+type CoordinateData struct {
+	BoundedX float32 `json:"boundedX"`
+	BoundedY float32 `json:"boundedY"`
+	Colour   string  `json:"colour"`
+	IsNew    bool    `json:"isNew"`
+	Cluster  int     `json:"cluster"`
+}
+
+func extractCoordinates(coordinates []CoordinateData) [][]float32 {
+	result := make([][]float32, len(coordinates))
+	for i, coord := range coordinates {
+		result[i] = []float32{coord.BoundedX, coord.BoundedY}
+	}
+	return result
+}
+
 func APILinearRegression(c *gin.Context) {
 	type Coordinates struct {
-		Coordinates [][]float32 `json:"coordinates"`
+		Coordinates []CoordinateData `json:"coordinates"`
 	}
 
 	var data Coordinates
@@ -27,42 +44,51 @@ func APILinearRegression(c *gin.Context) {
 		return
 	}
 
-	parameters := LinearRegression(data.Coordinates, NUMBER_OF_DIMENSIONS)
+	var datapoints [][]float32 = extractCoordinates(data.Coordinates)
+	var parameters []float32 = LinearRegression(datapoints, NUMBER_OF_DIMENSIONS)
+
+	fmt.Println(parameters)
+
 	c.JSON(http.StatusOK, gin.H{"parameters": parameters})
 }
 
 func APINearestNeighbours(c *gin.Context) {
-	type RequestData struct {
-		Coordinates [][]float64 `json:"coordinates"`
-		KNeighbours int         `json:"KNeighbours"`
-		Datapoint   []float64   `json:"datapoint"`
+	type Coordinates struct {
+		Coordinates []CoordinateData `json:"coordinates"`
+		KNeighbours int              `json:"neighboursToConsider"`
 	}
 
-	var requestData RequestData
-	if err := c.BindJSON(&requestData); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	var data Coordinates
+	if err := c.BindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
 
-	// Convert the coordinates to float32
-	var coordinates [][]float32
-	for _, point := range requestData.Coordinates {
-		var float32Point []float32
-		for _, coord := range point {
-			float32Point = append(float32Point, float32(coord))
+	var newDatapoint CoordinateData
+	var removeIndex int
+
+	// Find and remove the first isNew value
+	for i, point := range data.Coordinates {
+		if point.IsNew {
+			newDatapoint = data.Coordinates[i]
+			removeIndex = i
+			break
 		}
-		coordinates = append(coordinates, float32Point)
 	}
+
+	// Remove the found point
+	if removeIndex >= 0 && removeIndex < len(data.Coordinates) {
+		data.Coordinates = append(data.Coordinates[:removeIndex], data.Coordinates[removeIndex+1:]...)
+	}
+
+	// Convert the coordinates to float32
+	var datapoints [][]float32 = extractCoordinates(data.Coordinates)
 
 	// Convert the datapoint to float32
-	var datapoint []float32
-	for _, coord := range requestData.Datapoint {
-		datapoint = append(datapoint, float32(coord))
-	}
+	var datapoint []float32 = []float32{float32(newDatapoint.BoundedX), float32(newDatapoint.BoundedY)}
+	var KNeighbours int = int(data.KNeighbours)
 
-	// Convert the KNeighbours to int
-	var KNeighbours int = int(requestData.KNeighbours)
-	newLocation, neighbours := KMeans(coordinates, datapoint, KNeighbours)
+	newLocation, neighbours := Knn(datapoints, datapoint, KNeighbours)
 
 	// Prepare neighbors data for JSON serialization
 	neighboursData := make([]map[string]interface{}, len(neighbours))
@@ -77,13 +103,35 @@ func APINearestNeighbours(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"location": newLocation, "neighbours": neighboursData})
 }
 
+func APIKmeans(c *gin.Context) {
+	type Coordinates struct {
+		Coordinates      []CoordinateData `json:"coordinates"`
+		NumberOfClusters int              `json:"numberOfClusters"`
+	}
+
+	var data Coordinates
+	if err := c.BindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	var datapoints [][]float32 = extractCoordinates(data.Coordinates)
+	var numberOfClusters int = int(data.NumberOfClusters)
+
+	fmt.Println(datapoints, numberOfClusters)
+
+	minDistances, centroids := Kmeans(datapoints, numberOfClusters)
+
+	c.JSON(http.StatusOK, gin.H{"AssignedCusters": minDistances, "CentroidLocations": centroids})
+}
+
 func main() {
 	router := gin.Default()
 	router.Use(cors.Default())
 
 	router.POST("/LinearRegression", APILinearRegression)
 	router.POST("/NearestNeighbours", APINearestNeighbours)
+	router.POST("/Kmeans", APIKmeans)
 
 	router.Run("172.26.35.248:8000")
-
 }
