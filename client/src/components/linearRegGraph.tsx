@@ -5,6 +5,7 @@ import {  useEffect, useRef, useState } from "react";
 import RandomizeButton from "./randomButton";
 import getRandomData from "../../utils/randomDataGenerator";
 import { enteredData as pointData} from "../../utils/dataProps" ;
+import { exportData } from "../../utils/dataProps";
 interface LinearRegProps{
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 handleSendData:(data: exportData) => Promise<any>;

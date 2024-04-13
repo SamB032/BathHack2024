@@ -3,22 +3,11 @@ import './App.css'
 import Navbar from './components/navbar'
 import sendDataToAPI from '../utils/sendData';
 import LinearRegGraph from './components/linearRegGraph';
+//import {getAllErrors} from '../utils/modelError';
 
 function App() {
 
   const [activePage, setActivePage] = useState("");
-  const [dataToSend, setPointCoordinates] = useState<enteredData[]>(getRandomData())
-  const [parameters, setParameters] = useState<[number,number]>([0,1])
-
-  
-  useEffect(()=>{
-    fetchParameters()
-  },[])
-
-  const fetchParameters = async() => {
-    const parameterData = await sendDataToAPI(dataToSend);
-    setParameters(parameterData);
-  }
 
 
   const handleSetActivePage = (page: string) => {
@@ -44,9 +33,7 @@ function App() {
             {activePage == "Nearest Neighbour"&&<LinearRegGraph handleSendData={sendDataToAPI}/>}
             {activePage} Page content goes here.
             </div>}
-          <div>  
-
-          </div>
+          <div>  </div>
       </div>
     </div>
   );
