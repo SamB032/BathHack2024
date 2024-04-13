@@ -1,30 +1,12 @@
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import './App.css'
 import Navbar from './components/navbar'
-import getRandomData from '../utils/randomDataGenerator';
 import sendDataToAPI from '../utils/sendData';
-import { enteredData } from "../utils/dataProps";
-import LinearRegGraph, { pointData } from './components/linearRegGraph';
+import LinearRegGraph from './components/linearRegGraph';
 
 function App() {
 
   const [activePage, setActivePage] = useState("");
-  const [pointCoordinates, setPointCoordinates] = useState<[number,number][]>(getRandomData())
-  const [parameters, setParameters] = useState<[number,number]>([0,1])
-  
-  const dataToSend:enteredData = {
-    coordinates: pointCoordinates,
-    clusters: 4
-  }
-  
-  useEffect(()=>{
-    fetchParameters()
-  },[])
-
-  const fetchParameters = async() => {
-    const parameterData = await sendDataToAPI(dataToSend);
-    setParameters(parameterData);
-  }
 
   const handleSetActivePage = (page: string) => {
     setActivePage(page);
