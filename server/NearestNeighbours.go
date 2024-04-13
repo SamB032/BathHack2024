@@ -35,6 +35,10 @@ func Knn(datapoints [][]float32, newDatapoint []float32, numberOfNeighbours int)
 	var wg sync.WaitGroup
 	var distances []neighbours = make([]neighbours, len(datapoints))
 
+	if len(datapoints) == 1 {
+		return datapoints[0], []neighbours{}
+	}
+
 	// Calculate the Euclidean Distance from Each datapoint and its
 	for i, point := range datapoints {
 		wg.Add(1)

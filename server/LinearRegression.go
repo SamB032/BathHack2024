@@ -62,7 +62,6 @@ func LinearRegression(datapoints [][]float32, numberOfDimensions int) []float32 
 		go func() {
 			for gradient := range gradientChan {
 				// Update parameters using the computed gradients
-
 				for j := range parameters {
 					parameters[j] -= gradient[j] // Update other parameters
 				}

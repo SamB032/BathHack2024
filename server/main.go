@@ -88,8 +88,6 @@ func APINearestNeighbours(c *gin.Context) {
 	var datapoint []float32 = []float32{float32(newDatapoint.BoundedX), float32(newDatapoint.BoundedY)}
 	var KNeighbours int = int(data.KNeighbours)
 
-	fmt.Println(KNeighbours)
-
 	newLocation, neighbours := Knn(datapoints, datapoint, KNeighbours)
 
 	// Prepare neighbors data for JSON serialization
@@ -104,6 +102,27 @@ func APINearestNeighbours(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"location": newLocation, "neighbours": neighboursData})
 }
+
+// func APIKmeans() {
+// 	func main() {
+// 		datapoints := [][]float32{
+// 			{10, 20},
+// 			{15, 25},
+// 			{30, 35},
+// 			{35, 40},
+// 			{45, 50},
+// 			{55, 60},
+// 			{70, 80},
+// 		}
+
+// 		// Call Kmeans function with the example data points
+// 		clusters, centroids := Kmeans(datapoints, 2) // Assuming 2 clusters
+
+// 		// Print the clusters and centroids
+// 		fmt.Println("Clusters:", clusters)
+// 		fmt.Println("Centroids:", centroids)
+// 	}
+// }
 
 func main() {
 	router := gin.Default()
