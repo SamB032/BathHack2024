@@ -1,13 +1,14 @@
 interface ButtonsProps {
     handleClick: (status: boolean) => void;
     title:string;
+    disabled:boolean;
   }
   
-  export default function Button({ handleClick,title }: ButtonsProps) {
+  export default function Button({ handleClick,title,disabled }: ButtonsProps) {
     return (
       <div>
         {/* Pass a function reference to onClick */}
-        <button onClick={() => handleClick(true)}>{title}</button>
+        <button  style={{width:'125px',marginLeft:'5px'}}disabled={disabled} onClick={() => handleClick(true)}>{title}</button>
       </div>
     );
   }

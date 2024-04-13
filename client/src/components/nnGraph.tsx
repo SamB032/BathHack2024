@@ -14,7 +14,7 @@ interface lineData{
   slope:number;
   intercept:number;
 }
-export default function LinearRegGraph({handleSendData}:LinearRegProps){
+export default function NNGraph({handleSendData}:LinearRegProps){
     const canvasRef = useRef(null);
     const [reDrawFlag,setReDrawFlag] = useState(false);
     const [randomClicked,setRandomClicked]=useState(false);
@@ -76,7 +76,7 @@ export default function LinearRegGraph({handleSendData}:LinearRegProps){
         const boundedY = Math.min(500,(Math.max(500-y,0)))
         const colour="grey"
 console.log(boundedX,boundedY)
-        setPoints((prevPoints) => [...prevPoints, { boundedX, boundedY,colour,isNew:true,clusters:0 }]);
+        setPoints((prevPoints) => [...prevPoints, { boundedX, boundedY,colour,isNew:true,clusters:2 }]);
 
       };
       useEffect(() => {

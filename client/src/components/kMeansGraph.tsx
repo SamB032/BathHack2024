@@ -14,7 +14,7 @@ interface lineData{
   slope:number;
   intercept:number;
 }
-export default function LinearRegGraph({handleSendData}:LinearRegProps){
+export default function KMeansRegGraph({handleSendData}:LinearRegProps){
     const canvasRef = useRef(null);
     const [reDrawFlag,setReDrawFlag] = useState(false);
     const [randomClicked,setRandomClicked]=useState(false);
@@ -83,7 +83,7 @@ console.log(boundedX,boundedY)
         const fetchData = async () => {
             // Perform the asynchronous operation after points state is updated
             if(points[0]!=undefined){
-              const newLineData = await handleSendData({coordinates:points});
+              const newLineData = await handleSendData({coordinates:points,neighboursToConsider:2});
               console.log("New Line Data",newLineData)
               setLineData({
                 xMax: 500,
