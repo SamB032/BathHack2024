@@ -7,4 +7,5 @@ export interface enteredData{
 }
 export interface exportData{
     coordinates:enteredData[],
+    neighboursToConsider?:number,
 }

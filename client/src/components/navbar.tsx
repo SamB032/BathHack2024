@@ -9,7 +9,8 @@ function Navbar({ setActivePage }: NavbarProps) {
     <div style={{
         display:"flex",
         justifyContent:"center",
-        backgroundColor:"red",
+       marginLeft:"15px",
+       padding:10,
     }}>
       <button onClick={() => setActivePage("Linear Regression")}>Linear Regression</button>
       <button onClick={() => setActivePage("K-means")}>K-means</button>

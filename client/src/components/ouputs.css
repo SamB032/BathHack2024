@@ -1,0 +1,26 @@
+.sub-text{
+font-size: 16px;
+margin-left: 2px;
+}
+.sub-text-bold{
+    font-size: 16px;
+    text-align: center;
+    
+    font-weight: bold;
+    }
+.title{
+    font-size: 24px;
+    font-weight: bold;
+    margin-left: 2px;
+}
+.outputContainer{
+justify-content: center;
+display: flex;
+flex-direction: column;
+background-color: rgba(227, 241, 241, 0.669);
+border-radius: 10px;
+width:240px;
+padding: 10px;
+margin-left: -260px;
+
+}
