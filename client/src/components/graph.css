@@ -1,0 +1,78 @@
+.grid-container {
+    display: flex;
+    height: 500px;
+    width: 500px;
+    background-color: #dcdcdc;
+  }
+  .canvas{
+    position: relative;
+    top:-500px;
+    left: -2px;
+  }
+
+  .graph-container {
+    position: relative;
+  }
+  
+  .graph-axis {
+
+  }
+  
+  .left-axis {
+    height: 510px;
+    width: 20px;
+    margin-left: -20px;
+  }
+  
+  .bottom-axis {
+    height: 20px;
+    width: 520px;
+    margin-top: -10px;
+    margin-left: -20px;
+  }
+  
+  .axis-label {
+    position: relative;
+    display: inline-block;
+    top: -15px;
+    left: -30px;
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    
+  }
+  .axis-labelX {
+    position: relative;
+    display: inline-block;
+    top: 15px;
+    left: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    width:520px;
+    left:20px;
+  }
+  .tick {
+position: relative;
+    width: 20px;
+    
+    margin-top: 26px;
+
+  }
+  .first-tick {
+    position: relative;
+
+        margin-top: 5px;
+      }
+.tickX {
+position: relative;
+    width: 20px;
+    display: inline-block;
+    margin-left: 30px;
+
+    }
+.first-tickX {
+position: relative;
+display: inline-block;
+    margin-left: -30px;
+    }
