@@ -2,7 +2,7 @@
 import "./ouputs.css";
 interface InputData {
     title: string;
-    value: string; // Assuming value is of type string, adjust as needed
+    value: string; 
 }
 function LinearRegParams({ title, value }: InputData) {
   return (

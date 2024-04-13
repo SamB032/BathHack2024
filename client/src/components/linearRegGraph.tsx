@@ -26,11 +26,8 @@ export default function LinearRegGraph({handleSendData}:LinearRegProps){
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
-    
-        // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-        // Draw points
+
         ctx.fillStyle = "blue";
         points.forEach(({ boundedX, boundedY,colour }) => {
             const canvasX = boundedX;
@@ -67,7 +64,6 @@ export default function LinearRegGraph({handleSendData}:LinearRegProps){
       const  handleClick =  async (e: { clientX: number; clientY: number; }) => {
         setReDrawFlag(!reDrawFlag);
         console.log(reDrawFlag)
-        //could await here
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -76,12 +72,21 @@ export default function LinearRegGraph({handleSendData}:LinearRegProps){
         const boundedY = Math.min(500,(Math.max(500-y,0)))
         const colour="grey"
 console.log(boundedX,boundedY)
-        setPoints((prevPoints) => [...prevPoints, { boundedX, boundedY,colour,isNew:true,clusters:0 }]);
+        setPoints((prevPoints) => {
+          if (prevPoints.length > 0) {
+              for (let i = 0; i < prevPoints.length; i++) {
+                  prevPoints[i].isNew = false;
+                  prevPoints[i].colour = "grey";
+                }
+              prevPoints[prevPoints.length - 1].colour = 'grey';
+          }
+          return [...prevPoints, { boundedX, boundedY, colour: 'black', isNew: true, clusters: 0 }];
+        });
+       
 
       };
       useEffect(() => {
         const fetchData = async () => {
-            // Perform the asynchronous operation after points state is updated
             if(points[0]!=undefined){
               const newLineData = await handleSendData({coordinates:points});
               console.log("New Line Data",newLineData)
@@ -96,7 +101,7 @@ console.log(boundedX,boundedY)
     }, [points]);
     useEffect(()=>{
       if(randomClicked){
-        setPoints(getRandomData());//generated points
+        setPoints(getRandomData());
       }
     },[randomClicked])
     useEffect(()=>{
@@ -104,7 +109,7 @@ console.log(boundedX,boundedY)
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        setPoints([]);//generated points
+        setPoints([]);
       }
     },[clearedClicked])
     

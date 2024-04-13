@@ -20,17 +20,17 @@ export default function NNGraph({handleSendData}:LinearRegProps){
     const [randomClicked,setRandomClicked]=useState(false);
     const [clearedClicked,setClearedClicked]=useState(false);
     const [lineData,setLineData]=useState<lineData>()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [globPointsToDraw,setGlobPointsToDraw]=useState<any[]>([]);
+    const [globLocation,setGlobLocation]=useState<number[]>([]);
+    const [fetchFlag,setFetchFlag]=useState(false);
     const [points, setPoints] = useState<pointData[]>([]);
     const gridTicks=[500,450,400,350,300,250,200,150,100,50,0]
     const gridTicksX=[0,50,100,150,200,250,300,350,400,450,500]
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
-    
-        // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-        // Draw points
         ctx.fillStyle = "blue";
         points.forEach(({ boundedX, boundedY,colour }) => {
             const canvasX = boundedX;
@@ -40,13 +40,28 @@ export default function NNGraph({handleSendData}:LinearRegProps){
             ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
           ctx.fill();
         });
+        globPointsToDraw.forEach((point)=>{
+
+            const canvas = canvasRef.current;
+            console.log(canvas)
+            const ctx = canvas.getContext("2d");
+          const point1 = { x: globLocation[0], y: globLocation[1] };
+            const point2 = { x: point.x, y: point.y };
+
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            console.log(point2.y)
+            ctx.moveTo(point1.x, point1.y); 
+            ctx.lineTo(point2.x, point2.y); 
+            ctx.stroke(); 
+            ctx.setLineDash([]); 
+            
+        })
       }, [points]);
     useEffect(()=>  {
         const line = lineData
-        console.log("called")
         if(line){
-          
-          console.log("line")
+    
           const canvas = canvasRef.current;
           const ctx = canvas.getContext("2d");
           ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -66,37 +81,60 @@ export default function NNGraph({handleSendData}:LinearRegProps){
     },[lineData,reDrawFlag])
       const  handleClick =  async (e: { clientX: number; clientY: number; }) => {
         setReDrawFlag(!reDrawFlag);
-        console.log(reDrawFlag)
-        //could await here
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
+        const ctx = canvas.getContext("2d");
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         const boundedX = Math.min(500,(Math.max(x,0)))
         const boundedY = Math.min(500,(Math.max(500-y,0)))
-        const colour="grey"
-console.log(boundedX,boundedY)
-        setPoints((prevPoints) => [...prevPoints, { boundedX, boundedY,colour,isNew:true,clusters:2 }]);
+        const colour="blue"
 
+    setPoints((prevPoints) => {
+        if (prevPoints.length > 0) {
+            for (let i = 0; i < prevPoints.length; i++) {
+                prevPoints[i].isNew = false;
+                prevPoints[i].colour = "grey";
+              }
+            prevPoints[prevPoints.length - 1].colour = 'grey';
+        }
+        setFetchFlag(true);
+        return [...prevPoints, { boundedX, boundedY, colour: 'black', isNew: true, clusters: 0 }];
+    });
       };
       useEffect(() => {
         const fetchData = async () => {
-            // Perform the asynchronous operation after points state is updated
-            if(points[0]!=undefined){
-              const newLineData = await handleSendData({coordinates:points});
-              console.log("New Line Data",newLineData)
-              setLineData({
-                xMax: 500,
-                slope: -newLineData.parameters[0],
-                intercept: newLineData.parameters[1]
-            });
+            if(points[0]!=undefined&&fetchFlag){
+               
+            setFetchFlag(false);
+              //const nearestNeighData =  await handleSendData({coordinates:points,neighboursToConsider:2});
+              //console.log("New Line Data",nearestNeighData)
+              const location = [100,100];//nearestNeighData.location;
+              setGlobLocation(location)
+              //const neighboursToConsider = nearestNeighData.neighbours;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const pointsToDraw: any[] = [{ x: 257, y: 248 },{ x: 311, y: 279 }];
+              setGlobPointsToDraw(pointsToDraw);
+              const distances =[];
+
+              setPoints((prevPoints) => {
+                // Update the color of the previous last point
+                /*if (prevPoints.length > 1) {
+                  for (const neighbour of neighboursToConsider) {
+                    prevPoints[neighbour.index].colour = 'red';
+                    pointsToDraw.push(neighbour.point);
+                    distances.push(neighbour.distance);
+                  }
+                }*/
+                return [...prevPoints];
+              });
             }
         };
         fetchData();
-    }, [points]);
+    }, [fetchFlag,points]);
     useEffect(()=>{
       if(randomClicked){
-        setPoints(getRandomData());//generated points
+        setPoints(getRandomData());
       }
     },[randomClicked])
     useEffect(()=>{
@@ -104,7 +142,7 @@ console.log(boundedX,boundedY)
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        setPoints([]);//generated points
+        setPoints([]);
       }
     },[clearedClicked])
     
