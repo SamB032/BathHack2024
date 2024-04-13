@@ -35,7 +35,9 @@ func Knn(datapoints [][]float32, newDatapoint []float32, numberOfNeighbours int)
 	var wg sync.WaitGroup
 	var distances []neighbours = make([]neighbours, len(datapoints))
 
-	if len(datapoints) == 1 {
+	if len(datapoints) == 0 {
+		return []float32{}, []neighbours{}
+	} else if len(datapoints) == 1 {
 		return datapoints[0], []neighbours{}
 	}
 
