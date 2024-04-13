@@ -1,6 +1,7 @@
-import { enteredData } from "./dataProps";
+import {  exportData } from "./dataProps";
 
-const sendDataToAPI = async (data:enteredData[]) => {
+const sendDataToAPI = async (data:exportData) => {
+    console.log("sent",data)
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -6,15 +6,20 @@ import RandomizeButton from "./randomButton";
 import getRandomData from "../../utils/randomDataGenerator";
 import { enteredData as pointData} from "../../utils/dataProps" ;
 interface LinearRegProps{
-handleSendData:(points:pointData[])=>void;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+handleSendData:(data: exportData) => Promise<any>;
+}
+interface lineData{
+  xMax:number;
+  slope:number;
+  intercept:number;
 }
 export default function LinearRegGraph({handleSendData}:LinearRegProps){
     const canvasRef = useRef(null);
     const [reDrawFlag,setReDrawFlag] = useState(false);
     const [randomClicked,setRandomClicked]=useState(false);
-    const [lineData,setLineData]=useState({
-        xMax:500, slope:-1.5,intercept:0,
-    })
+    const [clearedClicked,setClearedClicked]=useState(false);
+    const [lineData,setLineData]=useState<lineData>()
     const [points, setPoints] = useState<pointData[]>([]);
     const gridTicks=[500,450,400,350,300,250,200,150,100,50,0]
     const gridTicksX=[0,50,100,150,200,250,300,350,400,450,500]
@@ -36,18 +41,21 @@ export default function LinearRegGraph({handleSendData}:LinearRegProps){
           ctx.fill();
         });
       }, [points]);
-    useEffect(()=>{
+    useEffect(()=>  {
         const line = lineData
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
-        const intercept = 500-line.intercept
-        ctx.beginPath();
-        ctx.moveTo(0, intercept);
-        ctx.lineTo(line.xMax,line.xMax * line.slope + intercept);
-        ctx.stroke();
+        if(line){
+          const canvas = canvasRef.current;
+          const ctx = canvas.getContext("2d");
+          const intercept = 500-line.intercept
+          ctx.beginPath();
+          ctx.moveTo(0, intercept);
+          ctx.lineTo(line.xMax,line.xMax * line.slope + intercept);
+          ctx.stroke();
+        }
     },[lineData,reDrawFlag])
-      const handleClick = (e) => {
+      const  handleClick =  async (e: { clientX: number; clientY: number; }) => {
         setReDrawFlag(!reDrawFlag);
+        console.log(reDrawFlag)
         //could await here
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
@@ -57,9 +65,23 @@ export default function LinearRegGraph({handleSendData}:LinearRegProps){
         const boundedY = Math.min(500,(Math.max(500-y,0)))
         const colour="grey"
 console.log(boundedX,boundedY)
-        setPoints((prevPoints) => [...prevPoints, { boundedX, boundedY,colour,isNew:true }]);
-        handleSendData(points);
+        setPoints((prevPoints) => [...prevPoints, { boundedX, boundedY,colour,isNew:true,clusters:0 }]);
+
       };
+      useEffect(() => {
+        const fetchData = async () => {
+            // Perform the asynchronous operation after points state is updated
+            if(points[0]!=undefined){
+              const newLineData = await handleSendData({coordinates:points});
+              setLineData({
+                xMax: 500,
+                slope: newLineData.parameters[0],
+                intercept: newLineData.parameters[1]
+            });
+            }
+        };
+        fetchData();
+    }, [points]);
     useEffect(()=>{
       if(randomClicked){
         setPoints(getRandomData());//generated points
@@ -102,7 +124,8 @@ console.log(boundedX,boundedY)
           style={{ border: "1px solid black" }}
           onClick={handleClick}
         />
-      <RandomizeButton handleClick={()=>setRandomClicked(true)}></RandomizeButton>
+      <RandomizeButton handleClick={()=>setRandomClicked(true)} title="Randomise"></RandomizeButton>
+      <RandomizeButton handleClick={()=>setClearedClicked(true)} title="Randomise"></RandomizeButton>
     </>
     )
 }

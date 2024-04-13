@@ -5,3 +5,6 @@ export interface enteredData{
     isNew: boolean,
     clusters? : number
 }
+export interface exportData{
+    coordinates:enteredData[],
+}
