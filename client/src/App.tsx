@@ -4,13 +4,18 @@ import Navbar from './components/navbar'
 import getRandomData from '../utils/randomDataGenerator';
 import sendDataToAPI from '../utils/sendData';
 import { enteredData } from "../utils/dataProps";
-import LinearRegGraph from './components/linearRegGraph';
+import LinearRegGraph, { pointData } from './components/linearRegGraph';
 
 function App() {
 
   const [activePage, setActivePage] = useState("");
-  const [dataToSend, setDataToSend] = useState<enteredData[]>(getRandomData())
+  const [pointCoordinates, setPointCoordinates] = useState<[number,number][]>(getRandomData())
   const [parameters, setParameters] = useState<[number,number]>([0,1])
+  
+  const dataToSend:enteredData = {
+    coordinates: pointCoordinates,
+    clusters: 4
+  }
   
   useEffect(()=>{
     fetchParameters()
@@ -39,9 +44,9 @@ function App() {
       }}>
         {activePage && 
           <div>
-            {activePage == "Linear Regression"&&<LinearRegGraph/>}
-            {activePage == "K-means"&&<LinearRegGraph/>}
-            {activePage == "Nearest Neighbour"&&<LinearRegGraph/>}
+            {activePage == "Linear Regression"&&<LinearRegGraph handleSendData={sendDataToAPI}/>}
+            {activePage == "K-means"&&<LinearRegGraph handleSendData={sendDataToAPI}/>}
+            {activePage == "Nearest Neighbour"&&<LinearRegGraph handleSendData={sendDataToAPI}/>}
             {activePage} Page content goes here.
             </div>}
           <div>  </div>
