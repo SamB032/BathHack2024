@@ -2,18 +2,20 @@
 import "./graph.css";
 import ClickableArea from "./clickableArea";
 import {  useEffect, useRef, useState } from "react";
-export default function Graph(){
+import RandomizeButton from "./randomButton";
+import getRandomData from "../../utils/randomDataGenerator";
+import { enteredData as pointData} from "../../utils/dataProps" ;
+interface LinearRegProps{
+handleSendData:(points:pointData[])=>void;
+}
+export default function LinearRegGraph({handleSendData}:LinearRegProps){
     const canvasRef = useRef(null);
     const [reDrawFlag,setReDrawFlag] = useState(false);
+    const [randomClicked,setRandomClicked]=useState(false);
     const [lineData,setLineData]=useState({
         xMax:500, slope:-1.5,intercept:0,
     })
-    const [points, setPoints] = useState([
-      { boundedX: 0, boundedY: 500,colour:"grey",isNew:false },
-      { boundedX: 200, boundedY: 20,colour:"grey",isNew:false },
-      { boundedX: 300, boundedY: 30,colour:"grey",isNew:false },
-      { boundedX: 400, boundedY: 40,colour:"grey",isNew:false}
-    ]);
+    const [points, setPoints] = useState<pointData[]>([]);
     const gridTicks=[500,450,400,350,300,250,200,150,100,50,0]
     const gridTicksX=[0,50,100,150,200,250,300,350,400,450,500]
     useEffect(() => {
@@ -56,8 +58,13 @@ export default function Graph(){
         const colour="grey"
 console.log(boundedX,boundedY)
         setPoints((prevPoints) => [...prevPoints, { boundedX, boundedY,colour,isNew:true }]);
+        handleSendData(points);
       };
-    
+    useEffect(()=>{
+      if(randomClicked){
+        setPoints(getRandomData());//generated points
+      }
+    },[randomClicked])
     
     return(
         <>
@@ -95,6 +102,7 @@ console.log(boundedX,boundedY)
           style={{ border: "1px solid black" }}
           onClick={handleClick}
         />
+      <RandomizeButton handleClick={()=>setRandomClicked(true)}></RandomizeButton>
     </>
     )
 }

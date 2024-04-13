@@ -4,6 +4,7 @@ import Navbar from './components/navbar'
 import getRandomData from '../utils/randomDataGenerator';
 import sendDataToAPI from '../utils/sendData';
 import { enteredData } from "../utils/dataProps";
+import LinearRegGraph from './components/linearRegGraph';
 
 function App() {
 
@@ -42,7 +43,12 @@ function App() {
         minHeight:"80vh",
       }}>
         {activePage && 
-          <div>{activePage} Page content goes here.</div>}
+          <div>
+            {activePage == "Linear Regression"&&<LinearRegGraph/>}
+            {activePage == "K-means"&&<LinearRegGraph/>}
+            {activePage == "Nearest Neighbour"&&<LinearRegGraph/>}
+            {activePage} Page content goes here.
+            </div>}
           <div>  </div>
       </div>
     </div>
