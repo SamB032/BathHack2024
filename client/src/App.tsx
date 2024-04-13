@@ -13,6 +13,18 @@ import sendDataToAPILinear from '../utils/sendData';
 function App() {
 
   const [activePage, setActivePage] = useState("");
+  const [dataToSend, setPointCoordinates] = useState<enteredData[]>(getRandomData())
+  const [parameters, setParameters] = useState<[number,number]>([0,1])
+
+  
+  useEffect(()=>{
+    fetchParameters()
+  },[])
+
+  const fetchParameters = async() => {
+    const parameterData = await sendDataToAPI(dataToSend);
+    setParameters(parameterData);
+  }
 
 
   const handleSetActivePage = (page: string) => {
