@@ -9,8 +9,9 @@ import LinearRegGraph, { pointData } from './components/linearRegGraph';
 function App() {
 
   const [activePage, setActivePage] = useState("");
-  const [dataToSend, setDataToSend] = useState<enteredData[]>(getRandomData())
+  const [dataToSend, setPointCoordinates] = useState<enteredData[]>(getRandomData())
   const [parameters, setParameters] = useState<[number,number]>([0,1])
+
   
   useEffect(()=>{
     fetchParameters()
