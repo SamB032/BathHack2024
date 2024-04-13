@@ -25,7 +25,7 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
     const [reDrawFlag,setReDrawFlag] = useState(false);
     const [randomClicked,setRandomClicked]=useState(false);
     const [clearedClicked,setClearedClicked]=useState(false);
-    const [lineData,setLineData]=useState<lineData>()
+    const [lineData,setLineData]=useState<lineData>({xMax:1,slope:1,intercept:1})
     const [points, setPoints] = useState<pointData[]>([]);
     const gridTicks=[500,450,400,350,300,250,200,150,100,50,0]
     const gridTicksX=[0,50,100,150,200,250,300,350,400,450,500]
@@ -54,15 +54,19 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         ctx.fillStyle = "blue";
-        points.forEach(({ boundedX, boundedY,colour }) => {
+        points.forEach(({ boundedX, boundedY,colour,}) => {
             const canvasX = boundedX;
             const canvasY = canvas.height - boundedY;
             ctx.fillStyle = colour;
             ctx.beginPath();
             ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
           ctx.fill();
+        
         });
       }, [points]);
+     
+       
+
     
       useEffect(()=>  {
         const line = lineData
@@ -73,18 +77,35 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
           const canvas = canvasRef.current;
           const ctx = canvas.getContext("2d");
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          points.forEach(({ boundedX, boundedY,colour }) => {
+          points.forEach(({ boundedX, boundedY,colour, }) => {
             const canvasX = boundedX;
             const canvasY = canvas.height - boundedY;
             ctx.fillStyle = colour;
             ctx.beginPath();
             ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
-          ctx.fill();})
+          ctx.fill();
+        
+        })
+
           const intercept = 500-line.intercept
           ctx.beginPath();
           ctx.moveTo(0, intercept);
           ctx.lineTo(line.xMax,line.xMax * line.slope + intercept);
           ctx.stroke();
+
+          points.forEach(({ boundedX, boundedY }) => {
+            const point1 = { x:boundedX  , y:boundedX*line.slope + line.intercept };
+            const point2 = { x: boundedX, y: boundedY };
+
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            console.log(point2.y)
+            ctx.moveTo(point1.x, point1.y); 
+            ctx.lineTo(point2.x, point2.y); 
+            ctx.stroke(); 
+            ctx.setLineDash([]); 
+        
+        })
         }
     },[lineData,reDrawFlag])
 
