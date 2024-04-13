@@ -5,16 +5,22 @@ import {  useEffect, useRef, useState } from "react";
 import RandomizeButton from "./randomButton";
 import getRandomData from "../../utils/randomDataGenerator";
 import { exportData, enteredData as pointData} from "../../utils/dataProps" ;
+import {getAllErrors} from "../../utils/modelError"
+
 interface LinearRegProps{
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-handleSendData:(data: exportData) => Promise<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  errorMethod: string;
+  handleSendData:(data: exportData) => Promise<any>;
+  handleErrorValue: (errorValue: number) => void;
 }
+
 interface lineData{
   xMax:number;
   slope:number;
   intercept:number;
 }
-export default function LinearRegGraph({handleSendData}:LinearRegProps){
+
+export default function LinearRegGraph({errorMethod, handleSendData, handleErrorValue}:LinearRegProps){
     const canvasRef = useRef(null);
     const [reDrawFlag,setReDrawFlag] = useState(false);
     const [randomClicked,setRandomClicked]=useState(false);
@@ -23,6 +29,25 @@ export default function LinearRegGraph({handleSendData}:LinearRegProps){
     const [points, setPoints] = useState<pointData[]>([]);
     const gridTicks=[500,450,400,350,300,250,200,150,100,50,0]
     const gridTicksX=[0,50,100,150,200,250,300,350,400,450,500]
+
+    const someLineData:[number, number][] = []
+    const someParams:[number,number] = [0.75, 20]
+
+    console.log(points)
+
+    points.forEach((point)=>{
+      someLineData.push([point.boundedX, point.boundedY])
+    })
+
+    const errorData = getAllErrors(someLineData, someParams)
+
+    if(errorMethod == "Mean Absolute Error (MAE)"){
+        handleErrorValue(errorData.meanAbsoluteError)
+    }else if(errorMethod == "Mean Squared Error (MSE)") {
+      handleErrorValue(errorData.meanSquaredError)
+
+    }
+    
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
@@ -41,7 +66,8 @@ export default function LinearRegGraph({handleSendData}:LinearRegProps){
           ctx.fill();
         });
       }, [points]);
-    useEffect(()=>  {
+    
+      useEffect(()=>  {
         const line = lineData
         console.log("called")
         if(line){
@@ -64,10 +90,10 @@ export default function LinearRegGraph({handleSendData}:LinearRegProps){
           ctx.stroke();
         }
     },[lineData,reDrawFlag])
+
+
       const  handleClick =  async (e: { clientX: number; clientY: number; }) => {
         setReDrawFlag(!reDrawFlag);
-        console.log(reDrawFlag)
-        //could await here
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -75,7 +101,6 @@ export default function LinearRegGraph({handleSendData}:LinearRegProps){
         const boundedX = Math.min(500,(Math.max(x,0)))
         const boundedY = Math.min(500,(Math.max(500-y,0)))
         const colour="grey"
-console.log(boundedX,boundedY)
         setPoints((prevPoints) => [...prevPoints, { boundedX, boundedY,colour,isNew:true,clusters:0 }]);
 
       };
@@ -94,11 +119,13 @@ console.log(boundedX,boundedY)
         };
         fetchData();
     }, [points]);
+    
     useEffect(()=>{
       if(randomClicked){
         setPoints(getRandomData());//generated points
       }
     },[randomClicked])
+    
     useEffect(()=>{
       if(clearedClicked){
         const canvas = canvasRef.current;
@@ -111,17 +138,21 @@ console.log(boundedX,boundedY)
     return(
         <>
        <div className="grid-container">
-      <div className="axis-container">
-        <div className="graph-axis left-axis">
+        <div className="axis-container">
+          <div className="graph-axis left-axis">
             <div className="axis-label">
             {Array.from({ length: 1 }, (_, index) => (
-  <div className="first-tick" key={index} >{gridTicks[index]}</div>
-))}
+              <div className="first-tick" key={index}>
+                {gridTicks[index]} 
+              </div>))}
+            
             {Array.from({ length: 10 }, (_, index) => (
-  <div className="tick" key={index} >{gridTicks[index+1]}</div>
-))}
+              <div className="tick" key={index} >{gridTicks[index+1]}</div>
+            ))}
+
             </div>
         </div>
+        
         <div className="graph-axis bottom-axis">
           <div className="axis-labelX">
           {Array.from({ length: 1 }, (_, index) => (
@@ -147,8 +178,8 @@ console.log(boundedX,boundedY)
       <div style={{marginTop:-850,marginLeft:550, backgroundColor:"rgba(227, 241, 241, 0.669)",width:"250px",padding:5,height:'50px',display:'flex',flexDirection:'row',borderRadius:10,justifyContent:'center',alignContent:'center'
       }}>
       <div style={{display:'flex',flexDirection:'row',marginTop:'5px',marginLeft:'-5px'}}>
-      <RandomizeButton handleClick={() => setRandomClicked(true)} title="Randomise" disabled={randomClicked}></RandomizeButton>
-      <RandomizeButton handleClick={() => setClearedClicked(true)} title="Clear" disabled={clearedClicked}></RandomizeButton>
+        <RandomizeButton handleClick={() => setRandomClicked(true)} title="Randomise" disabled={randomClicked}></RandomizeButton>
+        <RandomizeButton handleClick={() => setClearedClicked(true)} title="Clear" disabled={clearedClicked}></RandomizeButton>
       </div>
       </div>
     </>

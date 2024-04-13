@@ -5,7 +5,7 @@ export const absoluteErrorDistance = (x:number, y:number, parameters:[number,num
     return absoluteError;
 }
 
-const meanAbsoluteError = (dataPoints: [number, number][], parameters: [number, number]) => {
+export const meanAbsoluteError = (dataPoints: [number, number][], parameters: [number, number]) => {
     let total = 0;
     dataPoints.forEach((singlePoint) => {
         total += absoluteErrorDistance(singlePoint[0], singlePoint[1], parameters);
@@ -19,7 +19,7 @@ const meanAbsoluteError = (dataPoints: [number, number][], parameters: [number, 
 
 ///////////////////////////////////////
 
-const meanSquaredError = (dataPoints: [number, number][], parameters: [number, number]) => {
+export const meanSquaredError = (dataPoints: [number, number][], parameters: [number, number]) => {
     let total = 0;
     dataPoints.forEach((point) => {
         const error = (point[1] - (parameters[1] + parameters[0] * point[0])) ** 2;
