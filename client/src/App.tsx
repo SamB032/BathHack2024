@@ -1,4 +1,4 @@
-import {  useState } from 'react';
+import {  useEffect, useState } from 'react';
 import './App.css'
 import Navbar from './components/navbar'
 import { sendDataToAPIKMeans, sendDataToAPINN } from '../utils/sendData';
@@ -16,6 +16,7 @@ function App() {
   const [errorType, setErrorType] = useState("");
   const [errorValue, setErrorValue] = useState(0);
   const [kToConsider,setKToConsider]= useState(2);
+  const [clusters,setClusters]= useState(2);
   const getErrorType = (errorType: string) => {
     setErrorType(errorType)
   }
@@ -28,6 +29,9 @@ function App() {
     setActivePage(page);
   };
 
+  useEffect(()=>{
+console.log("clusters updated",clusters);
+  },[clusters])
 
   return (
     <div style={{
@@ -66,14 +70,14 @@ function App() {
               <div style={{display:"flex",
               flexDirection:"row"}}>
            <div style={{marginLeft:'200px'}}>
-            <LinearRegParams title='K Means' modelType='k-means' ></LinearRegParams>
+            <LinearRegParams title='K Means' modelType='k-means'callback={setClusters} ></LinearRegParams>
            </div>
             <div>
-            <KMeansGraph handleSendData={sendDataToAPIKMeans}></KMeansGraph>
+            <KMeansGraph handleSendData={sendDataToAPIKMeans} clusters={clusters}></KMeansGraph>
           </div>
            
            <div>
-            <LinearRegOutputs title={'?'} value={'0.0012'}  modelType='k-means' ></LinearRegOutputs>
+            <LinearRegOutputs title={'?'} value={''}  modelType='k-means' ></LinearRegOutputs>
            </div>
 
            </div>
@@ -90,7 +94,7 @@ function App() {
               </div>
 
               <div>
-                <LinearRegOutputs title={'Distances'} value={'0.0012'} modelType='KNN'></LinearRegOutputs>
+                <LinearRegOutputs title={'Distances'} value={''} modelType='KNN'></LinearRegOutputs>
               </div>
           </div>
             }

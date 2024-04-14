@@ -24,6 +24,7 @@ export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [globPointsToDraw,setGlobPointsToDraw]=useState<any[]>([]);
     const [globLocation,setGlobLocation]=useState<number[]>([]);
+    const [newPoint,setNewPoint]=useState<number[]>([]);
     const [fetchFlag,setFetchFlag]=useState(false);
     const [points, setPoints] = useState<pointData[]>([]);
     const gridTicks=[500,450,400,350,300,250,200,150,100,50,0]
@@ -42,21 +43,14 @@ export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
           ctx.fill();
         });
         globPointsToDraw.forEach((point)=>{
-
-            const canvas = canvasRef.current;
-            console.log(canvas)
-            const ctx = canvas.getContext("2d");
-          const point1 = { x: globLocation[0], y: globLocation[1] };
-            const point2 = { x: point.x, y: point.y };
-
-            ctx.setLineDash([5, 5]);
+          const canvas = canvasRef.current;
+          const ctx = canvas.getContext("2d");
+          ctx.setLineDash([5, 5]);
             ctx.beginPath();
-            console.log(point2.y)
-            ctx.moveTo(point1.x, point1.y); 
-            ctx.lineTo(point2.x, point2.y); 
+            ctx.moveTo(globLocation[0], globLocation[1]); 
+            ctx.lineTo(point[0], 500-point[1]); 
             ctx.stroke(); 
             ctx.setLineDash([]); 
-            
         })
       }, [points]);
     useEffect(()=>  {
@@ -73,14 +67,11 @@ export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
             ctx.beginPath();
             ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
           ctx.fill();})
-          const intercept = 500-line.intercept
-          ctx.beginPath();
-          ctx.moveTo(0, intercept);
-          ctx.lineTo(line.xMax,line.xMax * line.slope + intercept);
-          ctx.stroke();
         }
+        
     },[lineData,reDrawFlag])
       const  handleClick =  async (e: { clientX: number; clientY: number; }) => {
+        setClearedClicked(false);
         setReDrawFlag(!reDrawFlag);
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
@@ -89,6 +80,7 @@ export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
         const y = e.clientY - rect.top;
         const boundedX = Math.min(500,(Math.max(x,0)))
         const boundedY = Math.min(500,(Math.max(500-y,0)))
+        setNewPoint([boundedX,y])
         const colour="blue"
 
     setPoints((prevPoints) => {
@@ -106,13 +98,10 @@ export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
       useEffect(() => {
         const fetchData = async () => {
             if(points[0]!=undefined&&fetchFlag){
-               console.log("considering k nn",kToConsider)
             setFetchFlag(false);
-            console.log("sending")
-              const nearestNeighData =  await handleSendData({coordinates:points,neighboursToConsider:kToConsider});
-              console.log("New Line Data",nearestNeighData)
-              const location = [100,100];//nearestNeighData.location;
-              setGlobLocation(location)
+              const nearestNeighData =  await handleSendData({coordinates:points,neighboursToConsider:Number(kToConsider)});
+              
+              setGlobLocation(newPoint);
               const neighboursToConsider = nearestNeighData.neighbours;
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const pointsToDraw: any[] = [{ x: 257, y: 248 },{ x: 311, y: 279 }];
@@ -136,15 +125,20 @@ export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
     }, [fetchFlag,points]);
     useEffect(()=>{
       if(randomClicked){
+        setClearedClicked(false);
         setPoints(getRandomData());
       }
     },[randomClicked])
     useEffect(()=>{
       if(clearedClicked){
+        setRandomClicked(false);
+        console.log("random called to clear")
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         setPoints([]);
+        setGlobPointsToDraw([]);
+        setGlobLocation([]);
       }
     },[clearedClicked])
     
