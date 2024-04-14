@@ -5,7 +5,7 @@ import "./ouputs.css";
 interface InputData {
     title: string;
     modelType: string;
-    callback: (errorType:string) => void|Dispatch<SetStateAction<number>>;
+    callback: (errorType:string) => void | Dispatch<SetStateAction<number>>;
 }
 
 function LinearRegParams({ title, modelType , callback}: InputData) {
