@@ -10,12 +10,11 @@ const sendDataToAPILinear = async (data:exportData) => {
 
     try {
         const response = await fetch('http://172.26.35.248:8000/LinearRegression', requestOptions);
+        const response = await fetch('http://172.26.35.248:8000/LinearRegression', requestOptions);
         if (!response.ok) {
             throw new Error('Failed to send data to API');
         }
         const returnedData = await response.json();
-        console.log('Returned:', returnedData);
-        
         return returnedData;
     } catch (error) {
         console.error('Error sending data to API:', error);
@@ -23,7 +22,6 @@ const sendDataToAPILinear = async (data:exportData) => {
 }
 
 const sendDataToAPINN = async (data:exportData) => {
-    console.log("sent nn",data)
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -31,12 +29,11 @@ const sendDataToAPINN = async (data:exportData) => {
     };
 
     try {
-        const response = await fetch('http:///172.26.35.248:8000/NearestNeighbours', requestOptions);
+        const response = await fetch('http://172.26.35.248:8000/NearestNeighbours', requestOptions);
         if (!response.ok) {
             throw new Error('Failed to send data to API');
         }
         const returnedData = await response.json();
-        console.log('Data sent successfully:', returnedData);
         
         return returnedData;
     } catch (error) {
@@ -44,7 +41,6 @@ const sendDataToAPINN = async (data:exportData) => {
     }
 }
 const sendDataToAPIKMeans = async (data:exportData) => {
-    console.log("sent",data)
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -52,12 +48,11 @@ const sendDataToAPIKMeans = async (data:exportData) => {
     };
 
     try {
-        const response = await fetch('http:///172.26.35.248:8000/KMeans', requestOptions);
+        const response = await fetch('http://172.26.35.248:8000/KMeans', requestOptions);
         if (!response.ok) {
             throw new Error('Failed to send data to API');
         }
         const returnedData = await response.json();
-        console.log('Data sent successfully:', returnedData);
         
         return returnedData;
     } catch (error) {

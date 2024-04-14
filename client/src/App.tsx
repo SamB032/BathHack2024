@@ -1,3 +1,4 @@
+import {  useEffect, useState } from 'react';
 import './App.css'
 import {  useEffect, useState } from 'react';
 import { sendDataToAPIKMeans, sendDataToAPINN } from '../utils/sendData';
@@ -15,7 +16,8 @@ function App() {
   const [activePage, setActivePage] = useState("");
   const [errorType, setErrorType] = useState("");
   const [errorValue, setErrorValue] = useState(0);
-  const [kToConsider,setKToConsider]= useState(0);
+  const [kToConsider,setKToConsider]= useState(2);
+  const [clusters,setClusters]= useState(2);
   const [distances, setDistances] = useState<number []>([])
   const [videoToDisplay, setVideoToDisplay] = useState("");
   const [howToUseText, setHowToUseText] = useState("");
@@ -81,6 +83,7 @@ function App() {
     setDistances(distances)
   }
   
+
   const getErrorType = (errorType: string) => {
     setErrorType(errorType)
   }
@@ -93,6 +96,9 @@ function App() {
     setActivePage(page);
   };
 
+  useEffect(()=>{
+console.log("clusters updated",clusters);
+  },[clusters])
 
   return (
     <div style={{
@@ -131,14 +137,14 @@ function App() {
               <div style={{display:"flex",
               flexDirection:"row"}}>
            <div style={{marginLeft:'200px'}}>
-            <LinearRegParams title='K Means' modelType='k-means' ></LinearRegParams>
+            <LinearRegParams title='K Means' modelType='k-means'callback={setClusters} ></LinearRegParams>
            </div>
             <div>
-            <KMeansGraph handleSendData={sendDataToAPIKMeans}></KMeansGraph>
+            <KMeansGraph handleSendData={sendDataToAPIKMeans} clusters={clusters}></KMeansGraph>
           </div>
            
            <div>
-            <LinearRegOutputs title={'?'} value={'0.0012'}  modelType='k-means' ></LinearRegOutputs>
+            <LinearRegOutputs title={'?'} value={''}  modelType='k-means' ></LinearRegOutputs>
            </div>
 
            </div>
