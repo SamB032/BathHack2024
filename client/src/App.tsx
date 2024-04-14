@@ -122,10 +122,14 @@ console.log("clusters updated",clusters);
             title="K Nearest Neighbors | Intuitive explained | Machine Learning Basics" 
             frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        <p className="desc-text-inner">Explanation</p>
       </div>
-      <div style={{width:'100vw',height:'500px', backgroundColor:'rgba(127, 150, 151, 0.14)',borderTop:'5px solid black',}}>
-      BathHack2024
+      <div style={{width:'100vw',height:'200px', backgroundColor:'rgba(127, 150, 151, 0.14)',borderTop:'2px solid black',display:'flex',justifyContent:'center',alignItems:'center'}}>
+        <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+          <div style={{display:'flex',flexDirection:'row',justifyContent:'center',alignItems:'center'}}></div>
+        <p style={{fontSize:'20px',marginLeft:'5px',marginRight:'20px',fontWeight:'bold'}}>BathHack2024</p>
+        <p>Max, Sam and Sush</p>
+        </div>
+      
       </div>
     </div>
   );

@@ -25,10 +25,8 @@ function LinearRegOutputs({ title, value ,modelType}: InputData) {
             {modelType == "k-means"&&
              <>
              <div className="title">Output</div>
-             <div className="sub-text">Loss being calculated with:</div>
-             <div className="sub-text-bold"> {title}</div>
-             <div className="sub-text">Current Value:</div>
-             <div className="sub-text-bold"> {value}</div></>}
+             <div className="sub-text">Nothing to show:</div>
+            </>}
            
                
             </div>
