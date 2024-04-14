@@ -9,7 +9,7 @@ const sendDataToAPILinear = async (data:exportData) => {
     };
 
     try {
-        const response = await fetch('http://192.168.0.64:8000/LinearRegression', requestOptions);
+        const response = await fetch('http://172.26.35.248:8000/LinearRegression', requestOptions);
         if (!response.ok) {
             throw new Error('Failed to send data to API');
         }
@@ -31,7 +31,7 @@ const sendDataToAPINN = async (data:exportData) => {
     };
 
     try {
-        const response = await fetch('http://192.168.0.64:8000/NearestNeighbours', requestOptions);
+        const response = await fetch('http:///172.26.35.248:8000/NearestNeighbours', requestOptions);
         if (!response.ok) {
             throw new Error('Failed to send data to API');
         }
@@ -52,7 +52,7 @@ const sendDataToAPIKMeans = async (data:exportData) => {
     };
 
     try {
-        const response = await fetch('http://192.168.0.64:8000/KMeans', requestOptions);
+        const response = await fetch('http:///172.26.35.248:8000/KMeans', requestOptions);
         if (!response.ok) {
             throw new Error('Failed to send data to API');
         }
