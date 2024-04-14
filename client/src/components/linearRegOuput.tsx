@@ -1,7 +1,7 @@
 import "./ouputs.css";
 interface InputData {
     title: string;
-    value: number; 
+    value: number | number[]; 
     modelType:string;
 }
 

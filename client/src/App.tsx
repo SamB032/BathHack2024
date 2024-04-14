@@ -16,6 +16,12 @@ function App() {
   const [errorType, setErrorType] = useState("");
   const [errorValue, setErrorValue] = useState(0);
   const [kToConsider,setKToConsider]= useState(0);
+  const [distances, setDistances] = useState<number []>([])
+
+  const getKNNDistances = (distances:number[]) => {
+    setDistances(distances)
+  }
+  
   const getErrorType = (errorType: string) => {
     setErrorType(errorType)
   }
@@ -86,11 +92,11 @@ function App() {
               </div>
               
               <div>
-                <NNGraph handleSendData={sendDataToAPINN} kToConsider={kToConsider}></NNGraph>
+                <NNGraph handleSendData={sendDataToAPINN} kToConsider={kToConsider} getDistance={getKNNDistances}></NNGraph>
               </div>
 
               <div>
-                <LinearRegOutputs title={'Distances'} value={'0.0012'} modelType='KNN'></LinearRegOutputs>
+                <LinearRegOutputs title={'Distances'} value={distances} modelType='KNN'></LinearRegOutputs>
               </div>
           </div>
             }
@@ -100,14 +106,18 @@ function App() {
           <div>  </div>
       </div>
       <div style={{width:'100vw',height:'500px', backgroundColor:'rgba(65,100,100,0.25)',display:'flex',flexDirection:'column',alignItems:'center'}}>
-      <p className="desc-text"> I'm confused what is machine learning ?</p>
-      <p className="desc-text-inner">Explanation</p>
-      <p className="desc-text">How do I use this ?</p>
-      <p className="desc-text-inner">Explanation</p>
-      <p className="desc-text"> Where can I see the code ?</p>
-      <p className="desc-text-inner">Explanation</p>
-      <p className="desc-text"> I'm still confused ?</p>
-      <p className="desc-text-inner">Explanation</p>
+        <p className="desc-text"> I'm confused what is machine learning ?</p>
+        <p className="desc-text-inner">Explanation</p>
+        <p className="desc-text">How do I use this ?</p>
+        <p className="desc-text-inner">Explanation</p>
+        <p className="desc-text"> Where can I see the code ?</p>
+        <p className="desc-text-inner">Explanation</p>
+        <p className="desc-text"> I'm still confused ?</p>
+          <iframe width="100px" height="100000px"  src="https://www.youtube.com/embed/0p0o5cmgLdE" 
+            title="K Nearest Neighbors | Intuitive explained | Machine Learning Basics" 
+            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <p className="desc-text-inner">Explanation</p>
       </div>
       <div style={{width:'100vw',height:'500px', backgroundColor:'rgba(127, 150, 151, 0.14)',borderTop:'5px solid black',}}>
       BathHack2024

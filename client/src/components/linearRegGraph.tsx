@@ -27,6 +27,8 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
     const [clearedClicked,setClearedClicked]=useState(false);
     const [lineData,setLineData]=useState<lineData>({xMax:500,slope:1,intercept:100})
     const [points, setPoints] = useState<pointData[]>([]);
+    
+    
     const gridTicks=[500,450,400,350,300,250,200,150,100,50,0]
     const gridTicksX=[0,50,100,150,200,250,300,350,400,450,500]
 
