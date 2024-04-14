@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	// "encoding/json"
 )
 
 const NUMBER_OF_DIMENSIONS int = 2
@@ -46,8 +44,6 @@ func APILinearRegression(c *gin.Context) {
 
 	var datapoints [][]float32 = extractCoordinates(data.Coordinates)
 	var parameters []float32 = LinearRegression(datapoints, NUMBER_OF_DIMENSIONS)
-
-	fmt.Println(parameters)
 
 	c.JSON(http.StatusOK, gin.H{"parameters": parameters})
 }
@@ -117,9 +113,6 @@ func APIKmeans(c *gin.Context) {
 
 	var datapoints [][]float32 = extractCoordinates(data.Coordinates)
 	var numberOfClusters int = int(data.NumberOfClusters)
-
-	fmt.Println(datapoints, numberOfClusters)
-
 	minDistances, centroids := Kmeans(datapoints, numberOfClusters)
 
 	c.JSON(http.StatusOK, gin.H{"AssignedCusters": minDistances, "CentroidLocations": centroids})
@@ -131,7 +124,7 @@ func main() {
 
 	router.POST("/LinearRegression", APILinearRegression)
 	router.POST("/NearestNeighbours", APINearestNeighbours)
-	router.POST("/Kmeans", APIKmeans)
+	router.POST("/KMeans", APIKmeans)
 
 	router.Run("172.26.35.248:8000")
 }
