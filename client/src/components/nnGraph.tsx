@@ -112,8 +112,9 @@ export default function NNGraph({handleSendData,kToConsider, getDistance}:Linear
             if(points[0]!=undefined&&fetchFlag){
                console.log("considering k nn",kToConsider)
             setFetchFlag(false);
+            console.log("sending")
               const nearestNeighData =  await handleSendData({coordinates:points,neighboursToConsider:kToConsider});
-              //console.log("New Line Data",nearestNeighData)
+              console.log("New Line Data",nearestNeighData)
               const location = [100,100];//nearestNeighData.location;
               setGlobLocation(location)
               const neighboursToConsider = nearestNeighData.neighbours;
@@ -130,14 +131,14 @@ export default function NNGraph({handleSendData,kToConsider, getDistance}:Linear
               setPoints((prevPoints) => {
                 // Update the color of the previous last point
                 if (prevPoints.length > 0) {
-                  for (const neighbour of neighboursToConsider) {
-                    prevPoints[neighbour.index].colour = 'red';
-                    pointsToDraw.push(neighbour.point);
-                    distances.push(neighbour.distance);
-                  }
+                    for (const neighbour of neighboursToConsider) {
+                        prevPoints[neighbour.index].colour = 'red';
+                        pointsToDraw.push(neighbour.point);
+                        distances.push(neighbour.distance);
+                    }
                 }
                 return [...prevPoints];
-              });
+            });
             }
         };
         fetchData();
