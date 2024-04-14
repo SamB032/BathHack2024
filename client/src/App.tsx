@@ -15,7 +15,7 @@ function App() {
   const [activePage, setActivePage] = useState("");
   const [errorType, setErrorType] = useState("");
   const [errorValue, setErrorValue] = useState(0);
-  const [kToConsider,setKToConsider]= useState(0);
+  const [kToConsider,setKToConsider]= useState(2);
   const getErrorType = (errorType: string) => {
     setErrorType(errorType)
   }

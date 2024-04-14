@@ -107,6 +107,7 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
 
       const  handleClick =  async (e: { clientX: number; clientY: number; }) => {
         setReDrawFlag(!reDrawFlag);
+        setClearedClicked(false);
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;

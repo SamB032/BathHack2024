@@ -108,11 +108,12 @@ export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
             if(points[0]!=undefined&&fetchFlag){
                console.log("considering k nn",kToConsider)
             setFetchFlag(false);
-              //const nearestNeighData =  await handleSendData({coordinates:points,neighboursToConsider:kToConsider});
-              //console.log("New Line Data",nearestNeighData)
+            console.log("sending")
+              const nearestNeighData =  await handleSendData({coordinates:points,neighboursToConsider:kToConsider});
+              console.log("New Line Data",nearestNeighData)
               const location = [100,100];//nearestNeighData.location;
               setGlobLocation(location)
-              //const neighboursToConsider = nearestNeighData.neighbours;
+              const neighboursToConsider = nearestNeighData.neighbours;
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const pointsToDraw: any[] = [{ x: 257, y: 248 },{ x: 311, y: 279 }];
               setGlobPointsToDraw(pointsToDraw);
@@ -120,15 +121,15 @@ export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
 
               setPoints((prevPoints) => {
                 // Update the color of the previous last point
-                /*if (prevPoints.length > 1) {
-                  for (const neighbour of neighboursToConsider) {
-                    prevPoints[neighbour.index].colour = 'red';
-                    pointsToDraw.push(neighbour.point);
-                    distances.push(neighbour.distance);
-                  }
-                }*/
+                if (prevPoints.length > 0) {
+                    for (const neighbour of neighboursToConsider) {
+                        prevPoints[neighbour.index].colour = 'red';
+                        pointsToDraw.push(neighbour.point);
+                        distances.push(neighbour.distance);
+                    }
+                }
                 return [...prevPoints];
-              });
+            });
             }
         };
         fetchData();
