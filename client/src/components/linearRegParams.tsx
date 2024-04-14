@@ -1,11 +1,11 @@
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import "./ouputs.css";
 
 interface InputData {
     title: string;
     modelType: string;
-    callback: (errorType:string) => void;
+    callback: (errorType:string) => void|Dispatch<SetStateAction<number>>;
 }
 
 function LinearRegParams({ title, modelType , callback}: InputData) {
@@ -15,17 +15,20 @@ function LinearRegParams({ title, modelType , callback}: InputData) {
   const [kValue, setKValue] = useState('2');
   const [cluster, setCluster] = useState('2');
   // Event handler to update kValue state only if the entered value is numeric
-  const handleInputChange = (e:any, modelType:string) => {
+  const handleInputChange = (e:any) => {
     const inputValue = e.target.value;
-
+    console.log(inputValue)
+    console.log(modelType)
     if(modelType==="KNN"){
       // Check if the entered value is numeric using regex
       if (/^\d*$/.test(inputValue) || inputValue === '') {
         setKValue(inputValue);
+       callback(inputValue);
       }
     }else if(modelType==="k-means"){
       if (/^\d*$/.test(inputValue) || inputValue === '') {
         setCluster(inputValue);
+        //callback(inputValue);
       }
     }
   };
@@ -48,7 +51,7 @@ function LinearRegParams({ title, modelType , callback}: InputData) {
         display:"flex",
        marginRight:"100px",
        width:"0px",
-       height:"300px",
+       height:"150px",
        padding:5,
     }}>
       

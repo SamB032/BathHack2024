@@ -9,12 +9,14 @@ function Navbar({ setActivePage }: NavbarProps) {
     <div style={{
         display:"flex",
         justifyContent:"center",
-       marginLeft:"15px",
+       marginLeft:"0px",
+       backgroundColor:'rgba(65,100,100,0.25)',
+       marginBottom:'20px',
        padding:10,
     }}>
-      <button onClick={() => setActivePage("Linear Regression")}>Linear Regression</button>
-      <button onClick={() => setActivePage("K-means")}>K-means</button>
-      <button onClick={() => setActivePage("Nearest Neighbour")}>Nearest Neighbour</button>
+      <button style={{marginRight:'5px'}}onClick={() => setActivePage("Linear Regression")}>Linear Regression</button>
+      <button style={{marginRight:'5px'}}onClick={() => setActivePage("K-means")}>K-means</button>
+      <button style={{marginRight:'5px'}}onClick={() => setActivePage("Nearest Neighbour")}>Nearest Neighbour</button>
     </div>
   );
 }

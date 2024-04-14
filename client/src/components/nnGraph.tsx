@@ -8,13 +8,14 @@ import { exportData, enteredData as pointData} from "../../utils/dataProps" ;
 interface LinearRegProps{
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 handleSendData:(data: exportData) => Promise<any>;
+kToConsider:number;
 }
 interface lineData{
   xMax:number;
   slope:number;
   intercept:number;
 }
-export default function NNGraph({handleSendData}:LinearRegProps){
+export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
     const canvasRef = useRef(null);
     const [reDrawFlag,setReDrawFlag] = useState(false);
     const [randomClicked,setRandomClicked]=useState(false);
@@ -105,9 +106,9 @@ export default function NNGraph({handleSendData}:LinearRegProps){
       useEffect(() => {
         const fetchData = async () => {
             if(points[0]!=undefined&&fetchFlag){
-               
+               console.log("considering k nn",kToConsider)
             setFetchFlag(false);
-              //const nearestNeighData =  await handleSendData({coordinates:points,neighboursToConsider:2});
+              //const nearestNeighData =  await handleSendData({coordinates:points,neighboursToConsider:kToConsider});
               //console.log("New Line Data",nearestNeighData)
               const location = [100,100];//nearestNeighData.location;
               setGlobLocation(location)

@@ -15,7 +15,7 @@ function App() {
   const [activePage, setActivePage] = useState("");
   const [errorType, setErrorType] = useState("");
   const [errorValue, setErrorValue] = useState(0);
-
+  const [kToConsider,setKToConsider]= useState(0);
   const getErrorType = (errorType: string) => {
     setErrorType(errorType)
   }
@@ -34,27 +34,30 @@ function App() {
       display:"flex",
       flexDirection:"column",
     }}>
-
+    <div style={{width:'100vw',height:'100px',marginTop:'-20px',backgroundColor:'rgba(0,100,100,0.5)',display:'flex',justifyContent:'center',alignItems:'center'}}>
+      <div style={{marginBottom:'-20px',fontWeight:'bold',fontSize:25,color:'white'}}>Experiment On Machine Learning Models Direct From Your Browser</div>
+      </div>
       <Navbar setActivePage={handleSetActivePage} />
       <div style={{
         width:"100vw",
         minHeight:"80vh",
         display:'flex',
         justifyContent:'center',
+        
       }}>
 
         {activePage ? 
           <div className="container">
             {activePage == "Linear Regression"&&
             <div style={{display:"flex",flexDirection:"row"}}>
-              <div style={{marginLeft:'300px'}}>
+              <div style={{marginLeft:'200px'}}>
                 <LinearRegParams title='Select Error Loss' modelType='LRM' callback={getErrorType} ></LinearRegParams>
               </div>
               <div>
                 <LinearRegGraph errorMethod={errorType} handleErrorValue={getErrorValue} handleSendData={sendDataToAPILinear}/>
               </div>
               <div>
-                <LinearRegOutputs title={errorType}  value={errorValue}></LinearRegOutputs>
+                <LinearRegOutputs title={errorType}  value={errorValue} modelType='LRM'></LinearRegOutputs>
               </div>
               
             </div>
@@ -62,7 +65,7 @@ function App() {
             {activePage == "K-means"&&
               <div style={{display:"flex",
               flexDirection:"row"}}>
-           <div style={{marginLeft:'300px'}}>
+           <div style={{marginLeft:'200px'}}>
             <LinearRegParams title='K Means' modelType='k-means' ></LinearRegParams>
            </div>
             <div>
@@ -70,7 +73,7 @@ function App() {
           </div>
            
            <div>
-            <LinearRegOutputs title={'MSE'} value={'0.0012'}></LinearRegOutputs>
+            <LinearRegOutputs title={'?'} value={'0.0012'}  modelType='k-means' ></LinearRegOutputs>
            </div>
 
            </div>
@@ -78,16 +81,16 @@ function App() {
             {activePage == "Nearest Neighbour"&&
              <div style={{display:"flex",flexDirection:"row"}}>
           
-              <div style={{marginLeft:'300px'}}>
-                <LinearRegParams title='KNN' modelType='KNN' ></LinearRegParams>
+              <div style={{marginLeft:'200px'}}>
+                <LinearRegParams title='KNN' modelType='KNN' callback={setKToConsider} ></LinearRegParams>
               </div>
               
               <div>
-                <NNGraph handleSendData={sendDataToAPINN}></NNGraph>
+                <NNGraph handleSendData={sendDataToAPINN} kToConsider={kToConsider}></NNGraph>
               </div>
 
               <div>
-                <LinearRegOutputs title={'MSE'} value={'0.0012'}></LinearRegOutputs>
+                <LinearRegOutputs title={'Distances'} value={'0.0012'} modelType='KNN'></LinearRegOutputs>
               </div>
           </div>
             }
@@ -95,6 +98,19 @@ function App() {
              Please Select A Model
               </div>}
           <div>  </div>
+      </div>
+      <div style={{width:'100vw',height:'500px', backgroundColor:'rgba(65,100,100,0.25)',display:'flex',flexDirection:'column',alignItems:'center'}}>
+      <p className="desc-text"> I'm confused what is machine learning ?</p>
+      <p className="desc-text-inner">Explanation</p>
+      <p className="desc-text">How do I use this ?</p>
+      <p className="desc-text-inner">Explanation</p>
+      <p className="desc-text"> Where can I see the code ?</p>
+      <p className="desc-text-inner">Explanation</p>
+      <p className="desc-text"> I'm still confused ?</p>
+      <p className="desc-text-inner">Explanation</p>
+      </div>
+      <div style={{width:'100vw',height:'500px', backgroundColor:'rgba(127, 150, 151, 0.14)',borderTop:'5px solid black',}}>
+      BathHack2024
       </div>
     </div>
   );

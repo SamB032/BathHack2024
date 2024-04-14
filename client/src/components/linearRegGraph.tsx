@@ -25,15 +25,14 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
     const [reDrawFlag,setReDrawFlag] = useState(false);
     const [randomClicked,setRandomClicked]=useState(false);
     const [clearedClicked,setClearedClicked]=useState(false);
-    const [lineData,setLineData]=useState<lineData>({xMax:1,slope:1,intercept:1})
+    const [lineData,setLineData]=useState<lineData>({xMax:500,slope:1,intercept:100})
     const [points, setPoints] = useState<pointData[]>([]);
     const gridTicks=[500,450,400,350,300,250,200,150,100,50,0]
     const gridTicksX=[0,50,100,150,200,250,300,350,400,450,500]
 
     const someLineData:[number, number][] = []
-    const someParams:[number,number] = [0.75, 20]
+    const someParams:[number,number] = [lineData.slope, lineData.intercept]
 
-    console.log(points)
 
     points.forEach((point)=>{
       someLineData.push([point.boundedX, point.boundedY])
@@ -70,10 +69,7 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
     
       useEffect(()=>  {
         const line = lineData
-        console.log("called")
         if(line){
-          
-          console.log("line")
           const canvas = canvasRef.current;
           const ctx = canvas.getContext("2d");
           ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -90,22 +86,21 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
           const intercept = 500-line.intercept
           ctx.beginPath();
           ctx.moveTo(0, intercept);
-          ctx.lineTo(line.xMax,line.xMax * line.slope + intercept);
+          ctx.lineTo(line.xMax,line.xMax * -line.slope + intercept);
           ctx.stroke();
-
+          if(errorMethod == "Mean Absolute Error (MAE)"){
           points.forEach(({ boundedX, boundedY }) => {
-            const point1 = { x:boundedX  , y:boundedX*line.slope + line.intercept };
-            const point2 = { x: boundedX, y: boundedY };
-
+            const point1 = { x: boundedX, y: canvas.height -boundedY };
+            const point2 = { x:boundedX  , y: boundedX*line.slope + line.intercept};
             ctx.setLineDash([5, 5]);
             ctx.beginPath();
-            console.log(point2.y)
             ctx.moveTo(point1.x, point1.y); 
-            ctx.lineTo(point2.x, point2.y); 
+            ctx.lineTo(point2.x, boundedX*-line.slope + (500-line.intercept)); 
             ctx.stroke(); 
             ctx.setLineDash([]); 
         
         })
+      }
         }
     },[lineData,reDrawFlag])
 
@@ -118,7 +113,6 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
         const y = e.clientY - rect.top;
         const boundedX = Math.min(500,(Math.max(x,0)))
         const boundedY = Math.min(500,(Math.max(500-y,0)))
-console.log(boundedX,boundedY)
         setPoints((prevPoints) => {
           if (prevPoints.length > 0) {
               for (let i = 0; i < prevPoints.length; i++) {
@@ -149,12 +143,14 @@ console.log(boundedX,boundedY)
     
     useEffect(()=>{
       if(randomClicked){
+        setClearedClicked(false);
         setPoints(getRandomData());
       }
     },[randomClicked])
     
     useEffect(()=>{
       if(clearedClicked){
+        setRandomClicked(false);
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
