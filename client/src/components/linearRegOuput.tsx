@@ -11,7 +11,7 @@ function LinearRegOutputs({ title, value ,modelType}: InputData) {
             display: "flex",
             justifyContent: "center",
         }}> <div className="outputContainer">
-            {modelType == "LMR"&& <>
+            {modelType == "LRM"&& <>
             <div className="title">Output</div>
             <div className="sub-text">Loss being calculated with:</div>
             <div className="sub-text-bold"> {title}</div>
