@@ -107,8 +107,8 @@ export default function KMeansRegGraph({handleSendData}:LinearRegProps){
             if(points[0]!=undefined&&fetchFlag){
                
             setFetchFlag(false);
-              //const nearestNeighData =  await handleSendData({coordinates:points,neighboursToConsider:2});
-              //console.log("New Line Data",nearestNeighData)
+              const KMeansNeighData =  await handleSendData({coordinates:points,numberOfClusters:2});
+              console.log("New Line Data",KMeansNeighData)
               const location = [100,100];//nearestNeighData.location;
               setGlobLocation(location)
               //const neighboursToConsider = nearestNeighData.neighbours;

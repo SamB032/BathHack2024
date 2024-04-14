@@ -7,15 +7,16 @@ import getRandomData from "../../utils/randomDataGenerator";
 import { exportData, enteredData as pointData} from "../../utils/dataProps" ;
 interface LinearRegProps{
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-handleSendData:(data: exportData) => Promise<any>;
-kToConsider:number;
+  handleSendData:(data: exportData) => Promise<any>;
+  kToConsider:number;
+  getDistance: (distances:number[]) => void; 
 }
 interface lineData{
   xMax:number;
   slope:number;
   intercept:number;
 }
-export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
+export default function NNGraph({handleSendData,kToConsider, getDistance}:LinearRegProps){
     const canvasRef = useRef(null);
     const [reDrawFlag,setReDrawFlag] = useState(false);
     const [randomClicked,setRandomClicked]=useState(false);
@@ -28,6 +29,7 @@ export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
     const [points, setPoints] = useState<pointData[]>([]);
     const gridTicks=[500,450,400,350,300,250,200,150,100,50,0]
     const gridTicksX=[0,50,100,150,200,250,300,350,400,450,500]
+    
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
@@ -59,7 +61,8 @@ export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
             
         })
       }, [points]);
-    useEffect(()=>  {
+    
+      useEffect(()=>  {
         const line = lineData
         if(line){
     
@@ -80,7 +83,8 @@ export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
           ctx.stroke();
         }
     },[lineData,reDrawFlag])
-      const  handleClick =  async (e: { clientX: number; clientY: number; }) => {
+      
+    const  handleClick =  async (e: { clientX: number; clientY: number; }) => {
         setReDrawFlag(!reDrawFlag);
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
@@ -108,27 +112,33 @@ export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
             if(points[0]!=undefined&&fetchFlag){
                console.log("considering k nn",kToConsider)
             setFetchFlag(false);
-              //const nearestNeighData =  await handleSendData({coordinates:points,neighboursToConsider:kToConsider});
-              //console.log("New Line Data",nearestNeighData)
+            console.log("sending")
+              const nearestNeighData =  await handleSendData({coordinates:points,neighboursToConsider:kToConsider});
+              console.log("New Line Data",nearestNeighData)
               const location = [100,100];//nearestNeighData.location;
               setGlobLocation(location)
-              //const neighboursToConsider = nearestNeighData.neighbours;
+              const neighboursToConsider = nearestNeighData.neighbours;
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const pointsToDraw: any[] = [{ x: 257, y: 248 },{ x: 311, y: 279 }];
               setGlobPointsToDraw(pointsToDraw);
-              const distances =[];
+              
+              const distances:number[] = [];
+
+              console.log(distances);
+
+              getDistance(distances);
 
               setPoints((prevPoints) => {
                 // Update the color of the previous last point
-                /*if (prevPoints.length > 1) {
-                  for (const neighbour of neighboursToConsider) {
-                    prevPoints[neighbour.index].colour = 'red';
-                    pointsToDraw.push(neighbour.point);
-                    distances.push(neighbour.distance);
-                  }
-                }*/
+                if (prevPoints.length > 0) {
+                    for (const neighbour of neighboursToConsider) {
+                        prevPoints[neighbour.index].colour = 'red';
+                        pointsToDraw.push(neighbour.point);
+                        distances.push(neighbour.distance);
+                    }
+                }
                 return [...prevPoints];
-              });
+            });
             }
         };
         fetchData();
@@ -164,7 +174,7 @@ export default function NNGraph({handleSendData,kToConsider}:LinearRegProps){
         <div className="graph-axis bottom-axis">
           <div className="axis-labelX">
           {Array.from({ length: 1 }, (_, index) => (
-  <div className="first-tickX" key={index} >{gridTicksX[index]}</div>
+        <div className="first-tickX" key={index} >{gridTicksX[index]}</div>
 ))}
             {Array.from({ length: 10 }, (_, index) => (
   <div className="tickX" key={index} >{gridTicksX[index+1]}</div>
