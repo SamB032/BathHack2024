@@ -8,25 +8,24 @@ import { exportData, enteredData as pointData} from "../../utils/dataProps" ;
 interface LinearRegProps{
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 handleSendData:(data: exportData) => Promise<any>;
+clusters:number;
 }
 interface lineData{
   xMax:number;
   slope:number;
   intercept:number;
 }
-export default function KMeansRegGraph({handleSendData}:LinearRegProps){
+export default function KMeansRegGraph({handleSendData,clusters}:LinearRegProps){
     const canvasRef = useRef(null);
     const [reDrawFlag,setReDrawFlag] = useState(false);
     const [randomClicked,setRandomClicked]=useState(false);
     const [clearedClicked,setClearedClicked]=useState(false);
     const [lineData,setLineData]=useState<lineData>()
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [globPointsToDraw,setGlobPointsToDraw]=useState<any[]>([]);
-    const [globLocation,setGlobLocation]=useState<number[]>([]);
     const [fetchFlag,setFetchFlag]=useState(false);
     const [points, setPoints] = useState<pointData[]>([]);
     const gridTicks=[500,450,400,350,300,250,200,150,100,50,0]
     const gridTicksX=[0,50,100,150,200,250,300,350,400,450,500]
+    const clusterColours = ["orange","blue","purple","green","brown","pink"];
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
@@ -40,47 +39,10 @@ export default function KMeansRegGraph({handleSendData}:LinearRegProps){
             ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
           ctx.fill();
         });
-        globPointsToDraw.forEach((point)=>{
-
-            const canvas = canvasRef.current;
-            console.log(canvas)
-            const ctx = canvas.getContext("2d");
-          const point1 = { x: globLocation[0], y: globLocation[1] };
-            const point2 = { x: point.x, y: point.y };
-
-            ctx.setLineDash([5, 5]);
-            ctx.beginPath();
-            console.log(point2.y)
-            ctx.moveTo(point1.x, point1.y); 
-            ctx.lineTo(point2.x, point2.y); 
-            ctx.stroke(); 
-            ctx.setLineDash([]); 
-            
-        })
       }, [points]);
-    useEffect(()=>  {
-        const line = lineData
-        if(line){
     
-          const canvas = canvasRef.current;
-          const ctx = canvas.getContext("2d");
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          points.forEach(({ boundedX, boundedY,colour }) => {
-            const canvasX = boundedX;
-            const canvasY = canvas.height - boundedY;
-            ctx.fillStyle = colour;
-            ctx.beginPath();
-            ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
-          ctx.fill();})
-          const intercept = 500-line.intercept
-          ctx.beginPath();
-          ctx.moveTo(0, intercept);
-          ctx.lineTo(line.xMax,line.xMax * line.slope + intercept);
-          ctx.stroke();
-        }
-    },[lineData,reDrawFlag])
       const  handleClick =  async (e: { clientX: number; clientY: number; }) => {
-        setReDrawFlag(!reDrawFlag);
+        setClearedClicked(false);
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
         const ctx = canvas.getContext("2d");
@@ -88,7 +50,6 @@ export default function KMeansRegGraph({handleSendData}:LinearRegProps){
         const y = e.clientY - rect.top;
         const boundedX = Math.min(500,(Math.max(x,0)))
         const boundedY = Math.min(500,(Math.max(500-y,0)))
-        const colour="blue"
 
     setPoints((prevPoints) => {
         if (prevPoints.length > 0) {
@@ -99,7 +60,7 @@ export default function KMeansRegGraph({handleSendData}:LinearRegProps){
             prevPoints[prevPoints.length - 1].colour = 'grey';
         }
         setFetchFlag(true);
-        return [...prevPoints, { boundedX, boundedY, colour: 'black', isNew: true, clusters: 0 }];
+        return [...prevPoints, { boundedX, boundedY, colour: 'black', isNew: true, clusters: -1 }];
     });
       };
       useEffect(() => {
@@ -107,25 +68,38 @@ export default function KMeansRegGraph({handleSendData}:LinearRegProps){
             if(points[0]!=undefined&&fetchFlag){
                
             setFetchFlag(false);
-              const KMeansNeighData =  await handleSendData({coordinates:points,numberOfClusters:2});
-              console.log("New Line Data",KMeansNeighData)
-              const location = [100,100];//nearestNeighData.location;
-              setGlobLocation(location)
-              //const neighboursToConsider = nearestNeighData.neighbours;
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const pointsToDraw: any[] = [{ x: 257, y: 248 },{ x: 311, y: 279 }];
-              setGlobPointsToDraw(pointsToDraw);
-              const distances =[];
+              const KMeansData =  await handleSendData({coordinates:points,numberOfClusters:Number(clusters)});
+              console.log("New Line Data",KMeansData)
+              const assignedClusters = KMeansData.AssignedCusters;
+              const CentroidLocations = KMeansData.CentroidLocations;
+
+              const canvas = canvasRef.current;
+              const ctx = canvas.getContext("2d");
+              console.log("centroids",CentroidLocations)
+              CentroidLocations.forEach((centroid: number[], index:number) => {
+                const canvasX = centroid[0];
+                const canvasY = canvas.height - centroid[1];
+                console.log("index",index)
+                console.log("colour", clusterColours[index]);
+                ctx.fillStyle = clusterColours[index];
+                ctx.beginPath();
+                ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
+                ctx.fill();
+            });
 
               setPoints((prevPoints) => {
                 // Update the color of the previous last point
-                /*if (prevPoints.length > 1) {
-                  for (const neighbour of neighboursToConsider) {
-                    prevPoints[neighbour.index].colour = 'red';
-                    pointsToDraw.push(neighbour.point);
-                    distances.push(neighbour.distance);
+                if (prevPoints.length > 1) {
+                  for (let i = 0; i < assignedClusters.length; i++) {
+                      const index = assignedClusters[i];
+              
+                      // Ensure that the index is within bounds
+                      if (index < prevPoints.length) {
+                          prevPoints[i].colour = clusterColours[Math.min(5, Math.max(0, index))];
+                      }
                   }
-                }*/
+              }
+              console.log("new pointts",prevPoints)
                 return [...prevPoints];
               });
             }
@@ -134,11 +108,13 @@ export default function KMeansRegGraph({handleSendData}:LinearRegProps){
     }, [fetchFlag,points]);
     useEffect(()=>{
       if(randomClicked){
+        setClearedClicked(false);
         setPoints(getRandomData());
       }
     },[randomClicked])
     useEffect(()=>{
       if(clearedClicked){
+        setRandomClicked(false);
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);

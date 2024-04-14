@@ -25,29 +25,14 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
     const [reDrawFlag,setReDrawFlag] = useState(false);
     const [randomClicked,setRandomClicked]=useState(false);
     const [clearedClicked,setClearedClicked]=useState(false);
-    const [lineData,setLineData]=useState<lineData>({xMax:500,slope:1,intercept:100})
+    const [lineData,setLineData]=useState<lineData>()
     const [points, setPoints] = useState<pointData[]>([]);
     
     
     const gridTicks=[500,450,400,350,300,250,200,150,100,50,0]
     const gridTicksX=[0,50,100,150,200,250,300,350,400,450,500]
 
-    const someLineData:[number, number][] = []
-    const someParams:[number,number] = [lineData.slope, lineData.intercept]
-
-
-    points.forEach((point)=>{
-      someLineData.push([point.boundedX, point.boundedY])
-    })
-
-    const errorData = getAllErrors(someLineData, someParams)
-
-    if(errorMethod == "Mean Absolute Error (MAE)"){
-        handleErrorValue(errorData.meanAbsoluteError)
-    }else if(errorMethod == "Mean Squared Error (MSE)") {
-      handleErrorValue(errorData.meanSquaredError)
-
-    }
+    
     
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -103,6 +88,22 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
         
         })
       }
+      const someLineData:[number, number][] = []
+    const someParams:[number,number] = [lineData.slope, lineData.intercept]
+
+
+    points.forEach((point)=>{
+      someLineData.push([point.boundedX, point.boundedY])
+    })
+
+    const errorData = getAllErrors(someLineData, someParams)
+
+    if(errorMethod == "Mean Absolute Error (MAE)"){
+        handleErrorValue(errorData.meanAbsoluteError)
+    }else if(errorMethod == "Mean Squared Error (MSE)") {
+      handleErrorValue(errorData.meanSquaredError)
+
+    }
         }
     },[lineData,reDrawFlag])
 
@@ -136,7 +137,7 @@ export default function LinearRegGraph({errorMethod, handleSendData, handleError
               console.log("New Line Data",newLineData)
               setLineData({
                 xMax: 500,
-                slope: -newLineData.parameters[0],
+                slope: newLineData.parameters[0],//flip ?
                 intercept: newLineData.parameters[1]
             });
             }

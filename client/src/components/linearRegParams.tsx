@@ -28,7 +28,7 @@ function LinearRegParams({ title, modelType , callback}: InputData) {
     }else if(modelType==="k-means"){
       if (/^\d*$/.test(inputValue) || inputValue === '') {
         setCluster(inputValue);
-        //callback(inputValue);
+        callback(inputValue);
       }
     }
   };
@@ -59,19 +59,17 @@ function LinearRegParams({ title, modelType , callback}: InputData) {
       <div className="outputContainer">
         <div className="title">Paramters</div>
         <div className="sub-text">Customise these to change how the model behaves:</div>
-        <div className="sub-text-bold"> {title}</div>
+        <div className="sub-text-bold"style={{textAlign:'left'}}> {title}</div>
 
         {
           modelType == "LRM" && 
-          <div>
+          <div style={{marginLeft:'52px'}}>
             <label htmlFor="mae"> MAE: </label>
             <input type="radio" name="mae" onClick={() => handleErrorChoice('mae')}/>
 
             <label htmlFor="mae"> MSE: </label>
             <input type="radio" name="mae" onClick={() => handleErrorChoice('mse')}/>
 
-            <label htmlFor="mae"> MAE: </label>
-            <input type="radio" name="mae" onClick={() => handleErrorChoice('mae')}/>
           </div>
         }
 
