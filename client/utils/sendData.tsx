@@ -10,7 +10,6 @@ const sendDataToAPILinear = async (data:exportData) => {
 
     try {
         const response = await fetch('http://172.26.35.248:8000/LinearRegression', requestOptions);
-        const response = await fetch('http://172.26.35.248:8000/LinearRegression', requestOptions);
         if (!response.ok) {
             throw new Error('Failed to send data to API');
         }

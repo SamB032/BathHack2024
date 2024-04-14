@@ -1,6 +1,5 @@
 import {  useEffect, useState } from 'react';
 import './App.css'
-import {  useEffect, useState } from 'react';
 import { sendDataToAPIKMeans, sendDataToAPINN } from '../utils/sendData';
 import Navbar from './components/navbar'
 import LinearRegGraph from './components/linearRegGraph';
